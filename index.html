@@ -29,10 +29,10 @@
         .exact-label   { font-size: 12px; color: #6c757d; font-weight: normal; display: block; margin-bottom: 2px; }
         .toast-container { position: fixed; top: 10px; right: 10px; z-index: 1050; }
         footer { background: #343a40; color: white; padding: 15px; position: fixed; bottom: 0; left: 0; width: 100%; }
- 
+
         /* ── Radian Calculator ── */
         .rad-container {
-            max-width: 500px;
+            max-width: 600px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -48,7 +48,7 @@
         .rad-header h2 { margin: 0 0 3px; font-size: 1.25rem; font-weight: 700; }
         .rad-header p  { margin: 0; font-size: 12px; opacity: 0.85; }
         .rad-body { padding: 18px 20px 20px; }
- 
+
         .rad-section-label {
             font-size: 11px;
             font-weight: 700;
@@ -57,30 +57,40 @@
             color: #6c757d;
             margin-bottom: 8px;
         }
- 
+
         /* Preset grid */
         .rad-presets {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 7px;
-            margin-bottom: 18px;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 5px;
+            margin-bottom: 6px;
+        }
+        .rad-presets-group-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #0d6efd;
+            margin-bottom: 5px;
         }
         .rad-preset-btn {
             border: 1.5px solid #dee2e6;
             background: #f8f9fa;
             border-radius: 8px;
-            padding: 8px 4px 6px;
+            padding: 6px 2px 5px;
             cursor: pointer;
             transition: all .15s;
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.15;
         }
         .rad-preset-btn:hover  { background: #e7f0ff; border-color: #0d6efd; }
         .rad-preset-btn.active { background: #0d6efd; border-color: #0d6efd; color: white; }
-        .rad-preset-btn .pf { font-size: 14px; font-weight: 700; display: block; }
-        .rad-preset-btn .pd { font-size: 10px; color: #888; display: block; margin-top: 2px; }
-        .rad-preset-btn.active .pd { color: rgba(255,255,255,.7); }
- 
+        .rad-preset-btn .pd { font-size: 9px;  font-weight: 700; display: block; color: #0d6efd; }
+        .rad-preset-btn .pf { font-size: 11px; font-weight: 700; display: block; }
+        .rad-preset-btn .pr { font-size: 9px;  color: #999; display: block; }
+        .rad-preset-btn.active .pd { color: rgba(255,255,255,.8); }
+        .rad-preset-btn.active .pr { color: rgba(255,255,255,.6); }
+
         /* Input row */
         .rad-input-row { display: flex; gap: 8px; align-items: stretch; margin-bottom: 16px; }
         .rad-input-row input {
@@ -100,7 +110,7 @@
             transition: background .15s; white-space: nowrap;
         }
         .rad-calc-btn:hover { background: #0b5ed7; }
- 
+
         /* Info bar */
         .rad-info-bar {
             background: #f0f4ff;
@@ -114,7 +124,7 @@
         }
         .rad-info-bar.show { display: block; }
         .rad-info-bar strong { color: #0d6efd; }
- 
+
         /* Result cards — 2 columns */
         .rad-cards {
             display: grid;
@@ -158,9 +168,9 @@
     </style>
 </head>
 <body>
- 
+
 <div class="toast-container" id="toastContainer"></div>
- 
+
 <!-- Degrees Trig Calculator -->
 <div class="container mt-5">
     <h2 class="mb-3">Trigonometry Calculator</h2>
@@ -178,7 +188,7 @@
     </div>
     <div id="result" class="result mt-3"></div>
 </div>
- 
+
 <!-- Inverse Trig Calculator -->
 <div class="container">
     <h2 class="mb-3">Inverse Trigonometry Calculator</h2>
@@ -196,7 +206,7 @@
     </div>
     <div id="inverseResult" class="result mt-3"></div>
 </div>
- 
+
 <!-- Radian Calculator -->
 <div class="rad-container">
     <div class="rad-header">
@@ -204,49 +214,80 @@
         <p>Pick a common angle below, or type any radian value. All 6 trig functions are shown at once.</p>
     </div>
     <div class="rad-body">
- 
-        <div class="rad-section-label">Pick a common angle</div>
+
+        <div class="rad-section-label">Quick-pick a common angle</div>
+        <div class="rad-presets-group-label">0° – 180°</div>
         <div class="rad-presets">
             <button class="rad-preset-btn" onclick="setRad(0, this)">
-                <span class="pf">0</span><span class="pd">0.0000</span>
+                <span class="pd">0°</span><span class="pf">0</span><span class="pr">0.0000</span>
             </button>
             <button class="rad-preset-btn" onclick="setRad(Math.PI/6, this)">
-                <span class="pf">π/6</span><span class="pd">0.5236</span>
+                <span class="pd">30°</span><span class="pf">π/6</span><span class="pr">0.5236</span>
             </button>
             <button class="rad-preset-btn" onclick="setRad(Math.PI/4, this)">
-                <span class="pf">π/4</span><span class="pd">0.7854</span>
+                <span class="pd">45°</span><span class="pf">π/4</span><span class="pr">0.7854</span>
             </button>
             <button class="rad-preset-btn" onclick="setRad(Math.PI/3, this)">
-                <span class="pf">π/3</span><span class="pd">1.0472</span>
+                <span class="pd">60°</span><span class="pf">π/3</span><span class="pr">1.0472</span>
             </button>
             <button class="rad-preset-btn" onclick="setRad(Math.PI/2, this)">
-                <span class="pf">π/2</span><span class="pd">1.5708</span>
+                <span class="pd">90°</span><span class="pf">π/2</span><span class="pr">1.5708</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(2*Math.PI/3, this)">
+                <span class="pd">120°</span><span class="pf">2π/3</span><span class="pr">2.0944</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(3*Math.PI/4, this)">
+                <span class="pd">135°</span><span class="pf">3π/4</span><span class="pr">2.3562</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(5*Math.PI/6, this)">
+                <span class="pd">150°</span><span class="pf">5π/6</span><span class="pr">2.6180</span>
             </button>
             <button class="rad-preset-btn" onclick="setRad(Math.PI, this)">
-                <span class="pf">π</span><span class="pd">3.1416</span>
-            </button>
-            <button class="rad-preset-btn" onclick="setRad(3*Math.PI/2, this)">
-                <span class="pf">3π/2</span><span class="pd">4.7124</span>
-            </button>
-            <button class="rad-preset-btn" onclick="setRad(2*Math.PI, this)">
-                <span class="pf">2π</span><span class="pd">6.2832</span>
+                <span class="pd">180°</span><span class="pf">π</span><span class="pr">3.1416</span>
             </button>
         </div>
- 
+        <div class="rad-presets-group-label" style="margin-top:10px;">210° – 360°</div>
+        <div class="rad-presets" style="margin-bottom:18px;">
+            <button class="rad-preset-btn" onclick="setRad(7*Math.PI/6, this)">
+                <span class="pd">210°</span><span class="pf">7π/6</span><span class="pr">3.6652</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(5*Math.PI/4, this)">
+                <span class="pd">225°</span><span class="pf">5π/4</span><span class="pr">3.9270</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(4*Math.PI/3, this)">
+                <span class="pd">240°</span><span class="pf">4π/3</span><span class="pr">4.1888</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(3*Math.PI/2, this)">
+                <span class="pd">270°</span><span class="pf">3π/2</span><span class="pr">4.7124</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(5*Math.PI/3, this)">
+                <span class="pd">300°</span><span class="pf">5π/3</span><span class="pr">5.2360</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(7*Math.PI/4, this)">
+                <span class="pd">315°</span><span class="pf">7π/4</span><span class="pr">5.4978</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(11*Math.PI/6, this)">
+                <span class="pd">330°</span><span class="pf">11π/6</span><span class="pr">5.7596</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(2*Math.PI, this)">
+                <span class="pd">360°</span><span class="pf">2π</span><span class="pr">6.2832</span>
+            </button>
+        </div>
+
         <div class="rad-section-label">Or enter any radian value manually</div>
         <div class="rad-input-row">
             <input type="number" id="radAngle" placeholder="e.g. 1.5708" step="any" oninput="clearPresetActive()">
             <button class="rad-calc-btn" onclick="calculateRad()">Calculate</button>
         </div>
- 
+
         <div class="rad-info-bar" id="radInfoBar"></div>
         <div class="rad-cards" id="radCards"></div>
     </div>
 </div>
- 
+
 <script>
 // ── Shared helpers ────────────────────────────────────────────────────────────
- 
+
 function showToast(message, type = 'danger') {
     const c = document.getElementById("toastContainer");
     const t = document.createElement("div");
@@ -256,11 +297,11 @@ function showToast(message, type = 'danger') {
     c.appendChild(t);
     setTimeout(() => t.remove(), 3000);
 }
- 
+
 function isUndefined(val) {
     return !isFinite(val) || isNaN(val) || Math.abs(val) > 1e12;
 }
- 
+
 function renderResult(id, dec, exact, ud, udMsg) {
     const el = document.getElementById(id);
     if (ud) {
@@ -271,9 +312,9 @@ function renderResult(id, dec, exact, ud, udMsg) {
         el.innerHTML = html;
     }
 }
- 
+
 // ── Degrees trig ──────────────────────────────────────────────────────────────
- 
+
 const EXACT_TRIG = {
     sin:   {0:"0",30:"1/2",45:"√2/2",60:"√3/2",90:"1",120:"√3/2",135:"√2/2",150:"1/2",180:"0",210:"−1/2",225:"−√2/2",240:"−√3/2",270:"−1",300:"−√3/2",315:"−√2/2",330:"−1/2",360:"0"},
     cos:   {0:"1",30:"√3/2",45:"√2/2",60:"1/2",90:"0",120:"−1/2",135:"−√2/2",150:"−√3/2",180:"−1",210:"−√3/2",225:"−√2/2",240:"−1/2",270:"0",300:"1/2",315:"√2/2",330:"√3/2",360:"1"},
@@ -282,7 +323,7 @@ const EXACT_TRIG = {
     cosec: {30:"2",45:"√2",60:"2/√3",90:"1",120:"2/√3",135:"√2",150:"2",210:"−2",225:"−√2",240:"−2/√3",270:"−1",300:"−2/√3",315:"−√2",330:"−2"},
     cot:   {30:"√3",45:"1",60:"1/√3",90:"0",120:"−1/√3",135:"−1",150:"−√3",210:"√3",225:"1",240:"1/√3",270:"0",300:"−1/√3",315:"−1",330:"−√3"}
 };
- 
+
 const EXACT_INVERSE = {
     asin:   {"0":"0°","0.5":"30°","1":"90°","-0.5":"−30°","-1":"−90°","0.7071067811865476":"45°","-0.7071067811865476":"−45°","0.8660254037844387":"60°","-0.8660254037844387":"−60°"},
     acos:   {"1":"0°","0.5":"60°","0":"90°","-0.5":"120°","-1":"180°","0.7071067811865476":"45°","-0.7071067811865476":"135°","0.8660254037844387":"30°","-0.8660254037844387":"150°"},
@@ -291,21 +332,21 @@ const EXACT_INVERSE = {
     asec:   {"1":"0°","2":"60°","-1":"180°","-2":"120°","1.4142135623730951":"45°","-1.4142135623730951":"135°"},
     acosec: {"1":"90°","2":"30°","-1":"−90°","-2":"−30°","1.4142135623730951":"45°","-1.4142135623730951":"−45°"}
 };
- 
+
 function getExactTrig(func, deg) {
     const t = EXACT_TRIG[func]; if (!t) return null;
     let key = Math.round(((deg % 360) + 360) % 360);
     if (key === 360) key = 0;
     return t.hasOwnProperty(key) ? t[key] : null;
 }
- 
+
 function getExactInverse(func, value) {
     const t = EXACT_INVERSE[func]; if (!t) return null;
     for (const [k, v] of Object.entries(t))
         if (Math.abs(parseFloat(k) - parseFloat(value)) < 1e-9) return v;
     return null;
 }
- 
+
 function undefinedReason(func, deg) {
     const n = ((deg % 360) + 360) % 360;
     const poles = { tan:[90,270], sec:[90,270], cosec:[0,180,360], cot:[0,180,360] };
@@ -313,12 +354,12 @@ function undefinedReason(func, deg) {
         return `${func}(${deg}°) is <strong>Undefined (UD)</strong> — vertical asymptote at ${n}°.`;
     return `Result is <strong>Undefined (UD)</strong> — outside the domain of ${func}.`;
 }
- 
+
 function inverseUndefinedReason(func, val) {
     const d = { asin:"−1 ≤ x ≤ 1", acos:"−1 ≤ x ≤ 1", atan:"all reals", acot:"all reals", asec:"|x| ≥ 1", acosec:"|x| ≥ 1" };
     return `<strong>Undefined (UD)</strong> — requires ${d[func]}, but you entered <em>${val}</em>.`;
 }
- 
+
 function calculate() {
     const ai = document.getElementById('angle').value;
     if (ai === "") { showToast("Please enter an angle value."); return; }
@@ -336,7 +377,7 @@ function calculate() {
         showToast("Calculation successful!", 'success');
     }
 }
- 
+
 function calculateInverse() {
     const vi = document.getElementById('inverseAngle').value;
     if (vi === "") { showToast("Please enter a value."); return; }
@@ -355,11 +396,11 @@ function calculateInverse() {
         showToast("Calculation successful!", 'success');
     }
 }
- 
+
 // ── Radian Calculator ─────────────────────────────────────────────────────────
- 
+
 function r10(v) { return Math.round(v * 1e10) / 1e10; }
- 
+
 const EXACT_RAD = (() => {
     const P = Math.PI;
     return {
@@ -382,7 +423,7 @@ const EXACT_RAD = (() => {
         [r10(2*P)]:    {sin:"0",    cos:"1",    tan:"0",     sec:"1",    cosec:"UD",    cot:"UD"   },
     };
 })();
- 
+
 const RAD_LABELS = (() => {
     const P = Math.PI;
     return {
@@ -393,7 +434,7 @@ const RAD_LABELS = (() => {
         [r10(11*P/6)]:"11π/6", [r10(2*P)]:"2π"
     };
 })();
- 
+
 function getExactRad(rad) {
     const n = ((rad % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
     return EXACT_RAD[r10(n)] || null;
@@ -402,7 +443,7 @@ function getRadLabel(rad) {
     const n = ((rad % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
     return RAD_LABELS[r10(n)] || null;
 }
- 
+
 let _activePresetBtn = null;
 function clearPresetActive() {
     if (_activePresetBtn) { _activePresetBtn.classList.remove('active'); _activePresetBtn = null; }
@@ -414,23 +455,23 @@ function setRad(val, btn) {
     document.getElementById('radAngle').value = parseFloat(val.toFixed(10));
     calculateRad();
 }
- 
+
 function calculateRad() {
     const input = document.getElementById('radAngle').value;
     if (input === "") { showToast("Please enter a radian value."); return; }
     const rad = parseFloat(input);
     if (isNaN(rad)) { showToast("Please enter a valid number."); return; }
- 
+
     // Info bar
     const label  = getRadLabel(rad) || rad.toFixed(6) + " rad";
     const degEq  = (rad * 180 / Math.PI).toFixed(4);
     const infoBar = document.getElementById('radInfoBar');
     infoBar.innerHTML = `Angle: <strong>${label}</strong> &nbsp;=&nbsp; ${rad.toFixed(6)} rad &nbsp;=&nbsp; <strong>${degEq}°</strong>`;
     infoBar.classList.add('show');
- 
+
     const exactRow = getExactRad(rad);
     const funcs = ['sin','cos','tan','sec','cosec','cot'];
- 
+
     function compute(f) {
         switch(f) {
             case 'sin':   return Math.sin(rad);
@@ -441,13 +482,13 @@ function calculateRad() {
             case 'cot':   return 1 / Math.tan(rad);
         }
     }
- 
+
     const cards = funcs.map(f => {
         let raw = compute(f);
         if (Math.abs(raw) < 1e-10) raw = 0;
         const exact = exactRow ? exactRow[f] : null;
         const ud = isUndefined(raw) || exact === "UD";
- 
+
         if (ud) {
             return `<div class="rad-card is-ud">
                 <div class="rad-card-label">${f}</div>
@@ -461,16 +502,19 @@ function calculateRad() {
             ${exact ? `<div class="rad-card-exact"><span class="ex-label">Exact:</span><span>${exact}</span></div>` : ''}
         </div>`;
     }).join('');
- 
+
     document.getElementById('radCards').innerHTML = cards;
     showToast("Calculation successful!", 'success');
 }
 </script>
- 
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
- 
-<footer>
-    <p>&copy; 2026 Trigonometry Calculator | Made By Ashley :0</p>
+
+<footer style="display:flex; align-items:center; justify-content:center; position:relative;">
+    <p style="margin:0;">&copy; 2026 Trigonometry Calculator | Made By Ashley :0</p>
+    <a href="https://github.com/chngzyashley-spec/trigonometry-calculator" target="_blank"
+       style="position:absolute; left:18px; font-size:12px; color:#adb5bd; text-decoration:none; opacity:0.8; transition:opacity .2s;"
+       onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">github ꩜</a>
 </footer>
 </body>
 </html>
