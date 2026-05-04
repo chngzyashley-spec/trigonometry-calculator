@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trigonometry Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Link to the favicon -->
     <link rel="icon" type="image/png" href="trigonometry.png">
     <style>
         body {
@@ -24,11 +23,20 @@
         }
         .result {
             margin-top: 20px;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
         }
-        .input-group-text {
-            font-size: 1.2rem;
+        .result-decimal {
+            color: #0d6efd;
+        }
+        .result-exact {
+            color: #198754;
+            font-size: 16px;
+            font-weight: normal;
+            margin-top: 4px;
+        }
+        .result-undefined {
+            color: #dc3545;
         }
         .toast-container {
             position: fixed;
@@ -46,22 +54,29 @@
             width: 100%;
             margin: 0;
         }
-        .description {
-            margin-top: 20px;
-            text-align: left; 
-            font-size: 16px;
-            color: #333;
-            max-width: 800px; 
-            margin-left: auto; 
-            margin-right: auto; 
+        .ud-badge {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 13px;
+            margin-left: 6px;
+            vertical-align: middle;
         }
-
+        .exact-label {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: normal;
+            display: block;
+            margin-bottom: 2px;
+        }
     </style>
 </head>
 <body>
-
+ 
     <div class="toast-container" id="toastContainer"></div>
-
+ 
     <div class="container mt-5">
         <h2 class="mb-3">Trigonometry Calculator</h2>
         <div class="mb-3 d-flex">
@@ -73,12 +88,12 @@
                 <option value="cosec">cosec</option>
                 <option value="cot">cot</option>
             </select>
-            <input type="number" id="angle" class="form-control me-2" placeholder="Enter angle">
+            <input type="number" id="angle" class="form-control me-2" placeholder="Enter angle (°)">
             <button class="btn btn-primary" onclick="calculate()">Calculate</button>
         </div>
-        <p class="result mt-3" id="result"></p>
+        <div id="result" class="result mt-3"></div>
     </div>
-    
+ 
     <div class="container">
         <h2 class="mb-3">Inverse Trigonometry Calculator</h2>
         <div class="mb-3 d-flex">
@@ -93,10 +108,12 @@
             <input type="number" id="inverseAngle" class="form-control me-2" placeholder="Enter value">
             <button class="btn btn-primary" onclick="calculateInverse()">Calculate</button>
         </div>
-        <p class="result mt-3" id="inverseResult"></p>
+        <div id="inverseResult" class="result mt-3"></div>
     </div>
-
+ 
     <script>
+        // ── Helpers ──────────────────────────────────────────────────────────
+ 
         function showToast(message, type = 'danger') {
             let toastContainer = document.getElementById("toastContainer");
             let toast = document.createElement("div");
@@ -107,61 +124,225 @@
             toastContainer.appendChild(toast);
             setTimeout(() => { toast.remove(); }, 3000);
         }
-        
+ 
+        /**
+         * Determine if a float is mathematically undefined:
+         *  - NaN (e.g. asin(2))
+         *  - Infinity / -Infinity (e.g. tan(90), sec(90))
+         *  - Extremely large magnitude that represents a pole (|val| > 1e12)
+         */
+        function isUndefined(val) {
+            return !isFinite(val) || isNaN(val) || Math.abs(val) > 1e12;
+        }
+ 
+        // ── Exact-value lookup ────────────────────────────────────────────────
+        // Key angles (degrees) and their known exact trig values.
+        // Returns a string like "√3/2", "1/2", "√3", "−1", "0", or null.
+ 
+        const EXACT_TRIG = {
+            // [func]: { angleDeg: exactString }
+            sin: {
+                0: "0", 30: "1/2", 45: "√2/2", 60: "√3/2", 90: "1",
+                120: "√3/2", 135: "√2/2", 150: "1/2", 180: "0",
+                210: "−1/2", 225: "−√2/2", 240: "−√3/2", 270: "−1",
+                300: "−√3/2", 315: "−√2/2", 330: "−1/2", 360: "0"
+            },
+            cos: {
+                0: "1", 30: "√3/2", 45: "√2/2", 60: "1/2", 90: "0",
+                120: "−1/2", 135: "−√2/2", 150: "−√3/2", 180: "−1",
+                210: "−√3/2", 225: "−√2/2", 240: "−1/2", 270: "0",
+                300: "1/2", 315: "√2/2", 330: "√3/2", 360: "1"
+            },
+            tan: {
+                0: "0", 30: "1/√3", 45: "1", 60: "√3",
+                120: "−√3", 135: "−1", 150: "−1/√3", 180: "0",
+                210: "1/√3", 225: "1", 240: "√3",
+                300: "−√3", 315: "−1", 330: "−1/√3", 360: "0"
+            },
+            sec: {
+                0: "1", 30: "2/√3", 45: "√2", 60: "2",
+                120: "−2", 135: "−√2", 150: "−2/√3", 180: "−1",
+                210: "−2/√3", 225: "−√2", 240: "−2",
+                300: "2", 315: "√2", 330: "2/√3", 360: "1"
+            },
+            cosec: {
+                30: "2", 45: "√2", 60: "2/√3", 90: "1",
+                120: "2/√3", 135: "√2", 150: "2",
+                210: "−2", 225: "−√2", 240: "−2/√3", 270: "−1",
+                300: "−2/√3", 315: "−√2", 330: "−2"
+            },
+            cot: {
+                30: "√3", 45: "1", 60: "1/√3",
+                90: "0", 120: "−1/√3", 135: "−1", 150: "−√3",
+                210: "√3", 225: "1", 240: "1/√3",
+                270: "0", 300: "−1/√3", 315: "−1", 330: "−√3"
+            }
+        };
+ 
+        // Inverse trig exact values: value → degrees (as exact string)
+        const EXACT_INVERSE = {
+            asin:  { "0": "0°", "0.5": "30°", "1": "90°", "-0.5": "−30°", "-1": "−90°",
+                     "0.7071067811865476": "45°", "-0.7071067811865476": "−45°",
+                     "0.8660254037844387": "60°", "-0.8660254037844387": "−60°" },
+            acos:  { "1": "0°", "0.5": "60°", "0": "90°", "-0.5": "120°", "-1": "180°",
+                     "0.7071067811865476": "45°", "-0.7071067811865476": "135°",
+                     "0.8660254037844387": "30°", "-0.8660254037844387": "150°" },
+            atan:  { "0": "0°", "0.5773502691896258": "30°", "1": "45°", "1.7320508075688772": "60°",
+                     "-0.5773502691896258": "−30°", "-1": "−45°", "-1.7320508075688772": "−60°" },
+            acot:  { "0": "90°", "0.5773502691896258": "60°", "1": "45°", "1.7320508075688772": "30°",
+                     "-0.5773502691896258": "120°", "-1": "135°", "-1.7320508075688772": "150°" },
+            asec:  { "1": "0°", "2": "60°", "-1": "180°", "-2": "120°",
+                     "1.4142135623730951": "45°", "-1.4142135623730951": "135°" },
+            acosec:{ "1": "90°", "2": "30°", "-1": "−90°", "-2": "−30°",
+                     "1.4142135623730951": "45°", "-1.4142135623730951": "−45°" }
+        };
+ 
+        /**
+         * Try to find an exact value for trig(angleDeg).
+         * Normalises angle to [0,360) to match the lookup table.
+         * Returns a string or null.
+         */
+        function getExactTrig(func, angleDeg) {
+            const table = EXACT_TRIG[func];
+            if (!table) return null;
+            let norm = ((angleDeg % 360) + 360) % 360;
+            // Round to nearest integer degree for the lookup
+            let key = Math.round(norm);
+            if (key === 360) key = 0;
+            return table.hasOwnProperty(key) ? table[key] : null;
+        }
+ 
+        /**
+         * Try to find an exact value for inverse trig(value).
+         * Matches by rounding computed float to known constants.
+         */
+        function getExactInverse(func, value) {
+            const table = EXACT_INVERSE[func];
+            if (!table) return null;
+            // Try direct rounded-string lookup
+            let rounded = parseFloat(value).toPrecision(13);
+            for (const [k, v] of Object.entries(table)) {
+                if (Math.abs(parseFloat(k) - parseFloat(value)) < 1e-9) return v;
+            }
+            return null;
+        }
+ 
+        // ── Undefined-reason messages ─────────────────────────────────────────
+ 
+        function undefinedReason(func, angleDeg) {
+            let norm = ((angleDeg % 360) + 360) % 360;
+            const reasons = {
+                tan:   [90, 270],
+                sec:   [90, 270],
+                cosec: [0, 180, 360],
+                cot:   [0, 180, 360]
+            };
+            if (reasons[func] && reasons[func].some(a => Math.abs(norm - a) < 1e-9)) {
+                return `${func}(${angleDeg}°) is <strong>Undefined (UD)</strong> — the function has a vertical asymptote at ${norm}°.`;
+            }
+            return `Result is <strong>Undefined (UD)</strong> — value is outside the domain of ${func}.`;
+        }
+ 
+        function inverseUndefinedReason(func, value) {
+            const domains = {
+                asin:   "−1 ≤ x ≤ 1",
+                acos:   "−1 ≤ x ≤ 1",
+                atan:   "all real numbers",
+                acot:   "all real numbers",
+                asec:   "|x| ≥ 1",
+                acosec: "|x| ≥ 1"
+            };
+            return `<strong>Undefined (UD)</strong> — ${func.replace('a','')}⁻¹ requires ${domains[func] || 'a valid domain'}, but you entered <em>${value}</em>.`;
+        }
+ 
+        // ── Render helpers ────────────────────────────────────────────────────
+ 
+        function renderResult(containerId, decimalVal, exactVal, isUD, udMessage) {
+            const el = document.getElementById(containerId);
+            if (isUD) {
+                el.innerHTML = `<span class="result-undefined">⚠ ${udMessage}</span>`;
+            } else {
+                let html = `<span class="result-decimal">Decimal: ${decimalVal}</span>`;
+                if (exactVal) {
+                    html += `<br><span class="result-exact"><span class="exact-label">Exact value</span>${exactVal}</span>`;
+                }
+                el.innerHTML = html;
+            }
+        }
+ 
+        // ── Main calculation functions ────────────────────────────────────────
+ 
         function calculate() {
-            let angle = document.getElementById('angle').value;
-            if (angle === "") {
+            const angleInput = document.getElementById('angle').value;
+            if (angleInput === "") {
                 showToast("Please enter an angle value.");
                 return;
             }
-            let func = document.getElementById('operation').value;
-            let radians = parseFloat(angle) * (Math.PI / 180);
-            let result;
-
+            const func = document.getElementById('operation').value;
+            const angleDeg = parseFloat(angleInput);
+            const radians = angleDeg * (Math.PI / 180);
+            let raw;
+ 
             switch (func) {
-                case 'sin': result = Math.sin(radians); break;
-                case 'cos': result = Math.cos(radians); break;
-                case 'tan': result = Math.tan(radians); break;
-                case 'sec': result = 1 / Math.cos(radians); break;
-                case 'cosec': result = 1 / Math.sin(radians); break;
-                case 'cot': result = 1 / Math.tan(radians); break;
-                default: result = "Invalid operation";
+                case 'sin':   raw = Math.sin(radians); break;
+                case 'cos':   raw = Math.cos(radians); break;
+                case 'tan':   raw = Math.tan(radians); break;
+                case 'sec':   raw = 1 / Math.cos(radians); break;
+                case 'cosec': raw = 1 / Math.sin(radians); break;
+                case 'cot':   raw = 1 / Math.tan(radians); break;
+                default:      raw = NaN;
             }
-
-            document.getElementById('result').innerText = `Result: ${result.toFixed(6)}`;
-            showToast("Calculation successful!", 'success');
+ 
+            // Round near-zero to exactly 0 (floating-point noise like sin(180°) = 1.2e-16)
+            if (Math.abs(raw) < 1e-10) raw = 0;
+ 
+            if (isUndefined(raw)) {
+                renderResult('result', null, null, true, undefinedReason(func, angleDeg));
+                showToast("Result is Undefined (UD).", 'danger');
+            } else {
+                const exact = getExactTrig(func, angleDeg);
+                renderResult('result', raw.toFixed(6), exact, false);
+                showToast("Calculation successful!", 'success');
+            }
         }
-
+ 
         function calculateInverse() {
-            let value = document.getElementById('inverseAngle').value;
-            if (value === "") {
+            const valueInput = document.getElementById('inverseAngle').value;
+            if (valueInput === "") {
                 showToast("Please enter a value.");
                 return;
             }
-            let func = document.getElementById('inverseOperation').value;
-            let result;
-
+            const func = document.getElementById('inverseOperation').value;
+            const value = parseFloat(valueInput);
+            let raw;
+ 
             switch (func) {
-                case 'asin': result = Math.asin(parseFloat(value)) * (180 / Math.PI); break;
-                case 'acos': result = Math.acos(parseFloat(value)) * (180 / Math.PI); break;
-                case 'atan': result = Math.atan(parseFloat(value)) * (180 / Math.PI); break;
-                case 'acot': result = (Math.PI / 2 - Math.atan(parseFloat(value))) * (180 / Math.PI); break;
-                case 'asec': result = Math.acos(1 / parseFloat(value)) * (180 / Math.PI); break;
-                case 'acosec': result = Math.asin(1 / parseFloat(value)) * (180 / Math.PI); break;
-                default: result = "Invalid operation";
+                case 'asin':   raw = Math.asin(value) * (180 / Math.PI); break;
+                case 'acos':   raw = Math.acos(value) * (180 / Math.PI); break;
+                case 'atan':   raw = Math.atan(value) * (180 / Math.PI); break;
+                case 'acot':   raw = (Math.PI / 2 - Math.atan(value)) * (180 / Math.PI); break;
+                case 'asec':   raw = Math.acos(1 / value) * (180 / Math.PI); break;
+                case 'acosec': raw = Math.asin(1 / value) * (180 / Math.PI); break;
+                default:       raw = NaN;
             }
-
-            document.getElementById('inverseResult').innerText = `Result: ${result.toFixed(6)}`;
-            showToast("Calculation successful!", 'success');
+ 
+            if (isUndefined(raw)) {
+                renderResult('inverseResult', null, null, true, inverseUndefinedReason(func, valueInput));
+                showToast("Result is Undefined (UD).", 'danger');
+            } else {
+                const exact = getExactInverse(func, value);
+                // Show result in degrees with 6 decimal places, and exact if known
+                const exactDisplay = exact ? `${exact} (exact)` : null;
+                renderResult('inverseResult', raw.toFixed(6) + "°", exactDisplay, false);
+                showToast("Calculation successful!", 'success');
+            }
         }
     </script>
-    
+ 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Footer -->
+ 
     <footer>
         <p>&copy; 2026 Trigonometry Calculator | Made By Ashley :0</p>
     </footer>
-    </div>
 </body>
 </html>
