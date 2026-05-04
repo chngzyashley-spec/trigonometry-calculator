@@ -10,397 +10,467 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 50px;
+            margin: 50px auto;
             background-color: #f8f9fa;
+            padding-bottom: 80px;
         }
         .container {
             max-width: 500px;
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             margin-bottom: 30px;
         }
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
+        .result { margin-top: 20px; font-size: 18px; font-weight: bold; }
+        .result-decimal { color: #0d6efd; }
+        .result-exact  { color: #198754; font-size: 16px; font-weight: normal; margin-top: 4px; }
+        .result-undefined { color: #dc3545; }
+        .exact-label   { font-size: 12px; color: #6c757d; font-weight: normal; display: block; margin-bottom: 2px; }
+        .toast-container { position: fixed; top: 10px; right: 10px; z-index: 1050; }
+        footer { background: #343a40; color: white; padding: 15px; position: fixed; bottom: 0; left: 0; width: 100%; }
+ 
+        /* ── Radian Calculator ── */
+        .rad-container {
+            max-width: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 0 auto 30px;
+            overflow: hidden;
+            text-align: left;
         }
-        .result-decimal {
-            color: #0d6efd;
-        }
-        .result-exact {
-            color: #198754;
-            font-size: 16px;
-            font-weight: normal;
-            margin-top: 4px;
-        }
-        .result-undefined {
-            color: #dc3545;
-        }
-        .toast-container {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1050;
-        }
-        footer {
-            background: #343a40;
+        .rad-header {
+            background: linear-gradient(135deg, #0d6efd, #3d8bfd);
             color: white;
-            padding: 15px;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            margin: 0;
+            padding: 16px 20px 14px;
         }
-        .ud-badge {
-            display: inline-block;
-            background: #dc3545;
-            color: white;
-            border-radius: 4px;
-            padding: 2px 8px;
-            font-size: 13px;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-        .exact-label {
-            font-size: 12px;
+        .rad-header h2 { margin: 0 0 3px; font-size: 1.25rem; font-weight: 700; }
+        .rad-header p  { margin: 0; font-size: 12px; opacity: 0.85; }
+        .rad-body { padding: 18px 20px 20px; }
+ 
+        .rad-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
             color: #6c757d;
-            font-weight: normal;
-            display: block;
-            margin-bottom: 2px;
+            margin-bottom: 8px;
         }
-        .rad-input-wrap {
-            position: relative;
-            flex: 1;
-            margin-right: 0.5rem;
+ 
+        /* Preset grid */
+        .rad-presets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 7px;
+            margin-bottom: 18px;
         }
-        .rad-input-wrap input {
-            padding-right: 40px;
-        }
-        .rad-pi-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 1px 6px;
-            font-size: 13px;
+        .rad-preset-btn {
+            border: 1.5px solid #dee2e6;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 8px 4px 6px;
             cursor: pointer;
-            line-height: 1.4;
+            transition: all .15s;
+            text-align: center;
+            line-height: 1.2;
         }
-        .rad-pi-btn:hover { background: #495057; }
-        .rad-table { width: 100%; font-size: 15px; margin-top: 12px; }
-        .rad-table th { background: #f0f4ff; font-weight: 600; }
-        .rad-table td, .rad-table th { padding: 5px 8px; border: 1px solid #dee2e6; text-align: center; }
-        .rad-ud { color: #dc3545; font-weight: bold; }
-        .rad-exact { color: #198754; font-size: 13px; display: block; }
-        .rad-decimal { color: #0d6efd; }
-        .pi-presets { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; justify-content: center; }
-        .pi-presets button { font-size: 12px; padding: 2px 8px; }
+        .rad-preset-btn:hover  { background: #e7f0ff; border-color: #0d6efd; }
+        .rad-preset-btn.active { background: #0d6efd; border-color: #0d6efd; color: white; }
+        .rad-preset-btn .pf { font-size: 14px; font-weight: 700; display: block; }
+        .rad-preset-btn .pd { font-size: 10px; color: #888; display: block; margin-top: 2px; }
+        .rad-preset-btn.active .pd { color: rgba(255,255,255,.7); }
+ 
+        /* Input row */
+        .rad-input-row { display: flex; gap: 8px; align-items: stretch; margin-bottom: 16px; }
+        .rad-input-row input {
+            flex: 1;
+            border-radius: 8px;
+            border: 1.5px solid #dee2e6;
+            padding: 9px 12px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color .15s;
+        }
+        .rad-input-row input:focus { border-color: #0d6efd; box-shadow: 0 0 0 3px rgba(13,110,253,.1); }
+        .rad-calc-btn {
+            background: #0d6efd; color: white; border: none;
+            border-radius: 8px; padding: 9px 16px;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: background .15s; white-space: nowrap;
+        }
+        .rad-calc-btn:hover { background: #0b5ed7; }
+ 
+        /* Info bar */
+        .rad-info-bar {
+            background: #f0f4ff;
+            border-left: 3px solid #0d6efd;
+            border-radius: 0 6px 6px 0;
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .rad-info-bar.show { display: block; }
+        .rad-info-bar strong { color: #0d6efd; }
+ 
+        /* Result cards — 2 columns */
+        .rad-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .rad-card {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 11px 13px;
+            background: #fafafa;
+        }
+        .rad-card.is-ud {
+            background: #fff8f8;
+            border-color: #fecaca;
+        }
+        .rad-card-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+        .rad-card.is-ud .rad-card-label { color: #fca5a5; }
+        .rad-card-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0d6efd;
+            line-height: 1.1;
+        }
+        .rad-card.is-ud .rad-card-value { color: #dc3545; font-size: 15px; font-weight: 600; }
+        .rad-card-exact {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #16a34a;
+            font-weight: 500;
+        }
+        .rad-card-exact .ex-label { color: #6c757d; font-weight: 400; margin-right: 3px; }
+        .rad-ud-note { font-size: 11px; color: #ef4444; margin-top: 3px; }
     </style>
 </head>
 <body>
  
-    <div class="toast-container" id="toastContainer"></div>
+<div class="toast-container" id="toastContainer"></div>
  
-    <div class="container mt-5">
-        <h2 class="mb-3">Trigonometry Calculator</h2>
-        <div class="mb-3 d-flex">
-            <select id="operation" class="form-select me-2">
-                <option value="sin">sin</option>
-                <option value="cos">cos</option>
-                <option value="tan">tan</option>
-                <option value="sec">sec</option>
-                <option value="cosec">cosec</option>
-                <option value="cot">cot</option>
-            </select>
-            <input type="number" id="angle" class="form-control me-2" placeholder="Enter angle (°)">
-            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
-        </div>
-        <div id="result" class="result mt-3"></div>
+<!-- Degrees Trig Calculator -->
+<div class="container mt-5">
+    <h2 class="mb-3">Trigonometry Calculator</h2>
+    <div class="mb-3 d-flex">
+        <select id="operation" class="form-select me-2">
+            <option value="sin">sin</option>
+            <option value="cos">cos</option>
+            <option value="tan">tan</option>
+            <option value="sec">sec</option>
+            <option value="cosec">cosec</option>
+            <option value="cot">cot</option>
+        </select>
+        <input type="number" id="angle" class="form-control me-2" placeholder="Enter angle (°)">
+        <button class="btn btn-primary" onclick="calculate()">Calculate</button>
     </div>
+    <div id="result" class="result mt-3"></div>
+</div>
  
-    <div class="container">
-        <h2 class="mb-3">Inverse Trigonometry Calculator</h2>
-        <div class="mb-3 d-flex">
-            <select id="inverseOperation" class="form-select me-2">
-                <option value="asin">sin⁻¹</option>
-                <option value="acos">cos⁻¹</option>
-                <option value="atan">tan⁻¹</option>
-                <option value="acot">cot⁻¹</option>
-                <option value="asec">sec⁻¹</option>
-                <option value="acosec">cosec⁻¹</option>
-            </select>
-            <input type="number" id="inverseAngle" class="form-control me-2" placeholder="Enter value">
-            <button class="btn btn-primary" onclick="calculateInverse()">Calculate</button>
-        </div>
-        <div id="inverseResult" class="result mt-3"></div>
+<!-- Inverse Trig Calculator -->
+<div class="container">
+    <h2 class="mb-3">Inverse Trigonometry Calculator</h2>
+    <div class="mb-3 d-flex">
+        <select id="inverseOperation" class="form-select me-2">
+            <option value="asin">sin⁻¹</option>
+            <option value="acos">cos⁻¹</option>
+            <option value="atan">tan⁻¹</option>
+            <option value="acot">cot⁻¹</option>
+            <option value="asec">sec⁻¹</option>
+            <option value="acosec">cosec⁻¹</option>
+        </select>
+        <input type="number" id="inverseAngle" class="form-control me-2" placeholder="Enter value">
+        <button class="btn btn-primary" onclick="calculateInverse()">Calculate</button>
     </div>
+    <div id="inverseResult" class="result mt-3"></div>
+</div>
  
-    <script>
-        // ── Helpers ──────────────────────────────────────────────────────────
- 
-        function showToast(message, type = 'danger') {
-            let toastContainer = document.getElementById("toastContainer");
-            let toast = document.createElement("div");
-            let bgColor = type === 'success' ? 'bg-success' : 'bg-danger';
-            toast.className = `toast align-items-center text-white ${bgColor} border-0 show`;
-            toast.role = "alert";
-            toast.innerHTML = `<div class="d-flex"><div class="toast-body">${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
-            toastContainer.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 3000);
-        }
- 
-        /**
-         * Determine if a float is mathematically undefined:
-         *  - NaN (e.g. asin(2))
-         *  - Infinity / -Infinity (e.g. tan(90), sec(90))
-         *  - Extremely large magnitude that represents a pole (|val| > 1e12)
-         */
-        function isUndefined(val) {
-            return !isFinite(val) || isNaN(val) || Math.abs(val) > 1e12;
-        }
- 
-        // ── Exact-value lookup ────────────────────────────────────────────────
-        // Key angles (degrees) and their known exact trig values.
-        // Returns a string like "√3/2", "1/2", "√3", "−1", "0", or null.
- 
-        const EXACT_TRIG = {
-            // [func]: { angleDeg: exactString }
-            sin: {
-                0: "0", 30: "1/2", 45: "√2/2", 60: "√3/2", 90: "1",
-                120: "√3/2", 135: "√2/2", 150: "1/2", 180: "0",
-                210: "−1/2", 225: "−√2/2", 240: "−√3/2", 270: "−1",
-                300: "−√3/2", 315: "−√2/2", 330: "−1/2", 360: "0"
-            },
-            cos: {
-                0: "1", 30: "√3/2", 45: "√2/2", 60: "1/2", 90: "0",
-                120: "−1/2", 135: "−√2/2", 150: "−√3/2", 180: "−1",
-                210: "−√3/2", 225: "−√2/2", 240: "−1/2", 270: "0",
-                300: "1/2", 315: "√2/2", 330: "√3/2", 360: "1"
-            },
-            tan: {
-                0: "0", 30: "1/√3", 45: "1", 60: "√3",
-                120: "−√3", 135: "−1", 150: "−1/√3", 180: "0",
-                210: "1/√3", 225: "1", 240: "√3",
-                300: "−√3", 315: "−1", 330: "−1/√3", 360: "0"
-            },
-            sec: {
-                0: "1", 30: "2/√3", 45: "√2", 60: "2",
-                120: "−2", 135: "−√2", 150: "−2/√3", 180: "−1",
-                210: "−2/√3", 225: "−√2", 240: "−2",
-                300: "2", 315: "√2", 330: "2/√3", 360: "1"
-            },
-            cosec: {
-                30: "2", 45: "√2", 60: "2/√3", 90: "1",
-                120: "2/√3", 135: "√2", 150: "2",
-                210: "−2", 225: "−√2", 240: "−2/√3", 270: "−1",
-                300: "−2/√3", 315: "−√2", 330: "−2"
-            },
-            cot: {
-                30: "√3", 45: "1", 60: "1/√3",
-                90: "0", 120: "−1/√3", 135: "−1", 150: "−√3",
-                210: "√3", 225: "1", 240: "1/√3",
-                270: "0", 300: "−1/√3", 315: "−1", 330: "−√3"
-            }
-        };
- 
-        // Inverse trig exact values: value → degrees (as exact string)
-        const EXACT_INVERSE = {
-            asin:  { "0": "0°", "0.5": "30°", "1": "90°", "-0.5": "−30°", "-1": "−90°",
-                     "0.7071067811865476": "45°", "-0.7071067811865476": "−45°",
-                     "0.8660254037844387": "60°", "-0.8660254037844387": "−60°" },
-            acos:  { "1": "0°", "0.5": "60°", "0": "90°", "-0.5": "120°", "-1": "180°",
-                     "0.7071067811865476": "45°", "-0.7071067811865476": "135°",
-                     "0.8660254037844387": "30°", "-0.8660254037844387": "150°" },
-            atan:  { "0": "0°", "0.5773502691896258": "30°", "1": "45°", "1.7320508075688772": "60°",
-                     "-0.5773502691896258": "−30°", "-1": "−45°", "-1.7320508075688772": "−60°" },
-            acot:  { "0": "90°", "0.5773502691896258": "60°", "1": "45°", "1.7320508075688772": "30°",
-                     "-0.5773502691896258": "120°", "-1": "135°", "-1.7320508075688772": "150°" },
-            asec:  { "1": "0°", "2": "60°", "-1": "180°", "-2": "120°",
-                     "1.4142135623730951": "45°", "-1.4142135623730951": "135°" },
-            acosec:{ "1": "90°", "2": "30°", "-1": "−90°", "-2": "−30°",
-                     "1.4142135623730951": "45°", "-1.4142135623730951": "−45°" }
-        };
- 
-        /**
-         * Try to find an exact value for trig(angleDeg).
-         * Normalises angle to [0,360) to match the lookup table.
-         * Returns a string or null.
-         */
-        function getExactTrig(func, angleDeg) {
-            const table = EXACT_TRIG[func];
-            if (!table) return null;
-            let norm = ((angleDeg % 360) + 360) % 360;
-            // Round to nearest integer degree for the lookup
-            let key = Math.round(norm);
-            if (key === 360) key = 0;
-            return table.hasOwnProperty(key) ? table[key] : null;
-        }
- 
-        /**
-         * Try to find an exact value for inverse trig(value).
-         * Matches by rounding computed float to known constants.
-         */
-        function getExactInverse(func, value) {
-            const table = EXACT_INVERSE[func];
-            if (!table) return null;
-            // Try direct rounded-string lookup
-            let rounded = parseFloat(value).toPrecision(13);
-            for (const [k, v] of Object.entries(table)) {
-                if (Math.abs(parseFloat(k) - parseFloat(value)) < 1e-9) return v;
-            }
-            return null;
-        }
- 
-        // ── Undefined-reason messages ─────────────────────────────────────────
- 
-        function undefinedReason(func, angleDeg) {
-            let norm = ((angleDeg % 360) + 360) % 360;
-            const reasons = {
-                tan:   [90, 270],
-                sec:   [90, 270],
-                cosec: [0, 180, 360],
-                cot:   [0, 180, 360]
-            };
-            if (reasons[func] && reasons[func].some(a => Math.abs(norm - a) < 1e-9)) {
-                return `${func}(${angleDeg}°) is <strong>Undefined (UD)</strong> — the function has a vertical asymptote at ${norm}°.`;
-            }
-            return `Result is <strong>Undefined (UD)</strong> — value is outside the domain of ${func}.`;
-        }
- 
-        function inverseUndefinedReason(func, value) {
-            const domains = {
-                asin:   "−1 ≤ x ≤ 1",
-                acos:   "−1 ≤ x ≤ 1",
-                atan:   "all real numbers",
-                acot:   "all real numbers",
-                asec:   "|x| ≥ 1",
-                acosec: "|x| ≥ 1"
-            };
-            return `<strong>Undefined (UD)</strong> — ${func.replace('a','')}⁻¹ requires ${domains[func] || 'a valid domain'}, but you entered <em>${value}</em>.`;
-        }
- 
-        // ── Render helpers ────────────────────────────────────────────────────
- 
-        function renderResult(containerId, decimalVal, exactVal, isUD, udMessage) {
-            const el = document.getElementById(containerId);
-            if (isUD) {
-                el.innerHTML = `<span class="result-undefined">⚠ ${udMessage}</span>`;
-            } else {
-                let html = `<span class="result-decimal">Decimal: ${decimalVal}</span>`;
-                if (exactVal) {
-                    html += `<br><span class="result-exact"><span class="exact-label">Exact value</span>${exactVal}</span>`;
-                }
-                el.innerHTML = html;
-            }
-        }
- 
-        // ── Main calculation functions ────────────────────────────────────────
- 
-        function calculate() {
-            const angleInput = document.getElementById('angle').value;
-            if (angleInput === "") {
-                showToast("Please enter an angle value.");
-                return;
-            }
-            const func = document.getElementById('operation').value;
-            const angleDeg = parseFloat(angleInput);
-            const radians = angleDeg * (Math.PI / 180);
-            let raw;
- 
-            switch (func) {
-                case 'sin':   raw = Math.sin(radians); break;
-                case 'cos':   raw = Math.cos(radians); break;
-                case 'tan':   raw = Math.tan(radians); break;
-                case 'sec':   raw = 1 / Math.cos(radians); break;
-                case 'cosec': raw = 1 / Math.sin(radians); break;
-                case 'cot':   raw = 1 / Math.tan(radians); break;
-                default:      raw = NaN;
-            }
- 
-            // Round near-zero to exactly 0 (floating-point noise like sin(180°) = 1.2e-16)
-            if (Math.abs(raw) < 1e-10) raw = 0;
- 
-            if (isUndefined(raw)) {
-                renderResult('result', null, null, true, undefinedReason(func, angleDeg));
-                showToast("Result is Undefined (UD).", 'danger');
-            } else {
-                const exact = getExactTrig(func, angleDeg);
-                renderResult('result', raw.toFixed(6), exact, false);
-                showToast("Calculation successful!", 'success');
-            }
-        }
- 
-        function calculateInverse() {
-            const valueInput = document.getElementById('inverseAngle').value;
-            if (valueInput === "") {
-                showToast("Please enter a value.");
-                return;
-            }
-            const func = document.getElementById('inverseOperation').value;
-            const value = parseFloat(valueInput);
-            let raw;
- 
-            switch (func) {
-                case 'asin':   raw = Math.asin(value) * (180 / Math.PI); break;
-                case 'acos':   raw = Math.acos(value) * (180 / Math.PI); break;
-                case 'atan':   raw = Math.atan(value) * (180 / Math.PI); break;
-                case 'acot':   raw = (Math.PI / 2 - Math.atan(value)) * (180 / Math.PI); break;
-                case 'asec':   raw = Math.acos(1 / value) * (180 / Math.PI); break;
-                case 'acosec': raw = Math.asin(1 / value) * (180 / Math.PI); break;
-                default:       raw = NaN;
-            }
- 
-            if (isUndefined(raw)) {
-                renderResult('inverseResult', null, null, true, inverseUndefinedReason(func, valueInput));
-                showToast("Result is Undefined (UD).", 'danger');
-            } else {
-                const exact = getExactInverse(func, value);
-                // Show result in degrees with 6 decimal places, and exact if known
-                const exactDisplay = exact ? `${exact} (exact)` : null;
-                renderResult('inverseResult', raw.toFixed(6) + "°", exactDisplay, false);
-                showToast("Calculation successful!", 'success');
-            }
-        }
-    </script>
- 
-    <!-- Radian Calculator Section -->
-    <div class="container">
-        <h2 class="mb-1">Radian Calculator</h2>
-        <p class="text-muted mb-3" style="font-size:13px;">Enter an angle in radians. Common values: π/6 ≈ 0.5236, π/4 ≈ 0.7854, π/3 ≈ 1.0472, π/2 ≈ 1.5708.</p>
- 
-        <div class="pi-presets">
-            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(0)">0</button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI/6)">π/6</button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI/4)">π/4</button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI/3)">π/3</button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI/2)">π/2</button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI)">π</button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(3*Math.PI/2)">3π/2</button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(2*Math.PI)">2π</button>
-        </div>
- 
-        <div class="mb-3 d-flex align-items-center">
-            <div class="rad-input-wrap">
-                <input type="number" id="radAngle" class="form-control" placeholder="e.g. 1.5708" step="any">
-                <button class="rad-pi-btn" onclick="insertPi()" title="Insert π">π</button>
-            </div>
-            <button class="btn btn-primary" onclick="calculateRad()">Calculate All</button>
-        </div>
- 
-        <div id="radResult"></div>
+<!-- Radian Calculator -->
+<div class="rad-container">
+    <div class="rad-header">
+        <h2>Radian Calculator</h2>
+        <p>Pick a common angle below, or type any radian value. All 6 trig functions are shown at once.</p>
     </div>
+    <div class="rad-body">
  
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="rad-section-label">Pick a common angle</div>
+        <div class="rad-presets">
+            <button class="rad-preset-btn" onclick="setRad(0, this)">
+                <span class="pf">0</span><span class="pd">0.0000</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(Math.PI/6, this)">
+                <span class="pf">π/6</span><span class="pd">0.5236</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(Math.PI/4, this)">
+                <span class="pf">π/4</span><span class="pd">0.7854</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(Math.PI/3, this)">
+                <span class="pf">π/3</span><span class="pd">1.0472</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(Math.PI/2, this)">
+                <span class="pf">π/2</span><span class="pd">1.5708</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(Math.PI, this)">
+                <span class="pf">π</span><span class="pd">3.1416</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(3*Math.PI/2, this)">
+                <span class="pf">3π/2</span><span class="pd">4.7124</span>
+            </button>
+            <button class="rad-preset-btn" onclick="setRad(2*Math.PI, this)">
+                <span class="pf">2π</span><span class="pd">6.2832</span>
+            </button>
+        </div>
  
-    <footer>
-        <p>&copy; 2026 Trigonometry Calculator | Made By Ashley :0</p>
-    </footer>
+        <div class="rad-section-label">Or enter any radian value manually</div>
+        <div class="rad-input-row">
+            <input type="number" id="radAngle" placeholder="e.g. 1.5708" step="any" oninput="clearPresetActive()">
+            <button class="rad-calc-btn" onclick="calculateRad()">Calculate</button>
+        </div>
+ 
+        <div class="rad-info-bar" id="radInfoBar"></div>
+        <div class="rad-cards" id="radCards"></div>
+    </div>
+</div>
+ 
+<script>
+// ── Shared helpers ────────────────────────────────────────────────────────────
+ 
+function showToast(message, type = 'danger') {
+    const c = document.getElementById("toastContainer");
+    const t = document.createElement("div");
+    t.className = `toast align-items-center text-white ${type === 'success' ? 'bg-success' : 'bg-danger'} border-0 show`;
+    t.role = "alert";
+    t.innerHTML = `<div class="d-flex"><div class="toast-body">${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+ 
+function isUndefined(val) {
+    return !isFinite(val) || isNaN(val) || Math.abs(val) > 1e12;
+}
+ 
+function renderResult(id, dec, exact, ud, udMsg) {
+    const el = document.getElementById(id);
+    if (ud) {
+        el.innerHTML = `<span class="result-undefined">&#9888; ${udMsg}</span>`;
+    } else {
+        let html = `<span class="result-decimal">Decimal: ${dec}</span>`;
+        if (exact) html += `<br><span class="result-exact"><span class="exact-label">Exact value</span>${exact}</span>`;
+        el.innerHTML = html;
+    }
+}
+ 
+// ── Degrees trig ──────────────────────────────────────────────────────────────
+ 
+const EXACT_TRIG = {
+    sin:   {0:"0",30:"1/2",45:"√2/2",60:"√3/2",90:"1",120:"√3/2",135:"√2/2",150:"1/2",180:"0",210:"−1/2",225:"−√2/2",240:"−√3/2",270:"−1",300:"−√3/2",315:"−√2/2",330:"−1/2",360:"0"},
+    cos:   {0:"1",30:"√3/2",45:"√2/2",60:"1/2",90:"0",120:"−1/2",135:"−√2/2",150:"−√3/2",180:"−1",210:"−√3/2",225:"−√2/2",240:"−1/2",270:"0",300:"1/2",315:"√2/2",330:"√3/2",360:"1"},
+    tan:   {0:"0",30:"1/√3",45:"1",60:"√3",120:"−√3",135:"−1",150:"−1/√3",180:"0",210:"1/√3",225:"1",240:"√3",300:"−√3",315:"−1",330:"−1/√3",360:"0"},
+    sec:   {0:"1",30:"2/√3",45:"√2",60:"2",120:"−2",135:"−√2",150:"−2/√3",180:"−1",210:"−2/√3",225:"−√2",240:"−2",300:"2",315:"√2",330:"2/√3",360:"1"},
+    cosec: {30:"2",45:"√2",60:"2/√3",90:"1",120:"2/√3",135:"√2",150:"2",210:"−2",225:"−√2",240:"−2/√3",270:"−1",300:"−2/√3",315:"−√2",330:"−2"},
+    cot:   {30:"√3",45:"1",60:"1/√3",90:"0",120:"−1/√3",135:"−1",150:"−√3",210:"√3",225:"1",240:"1/√3",270:"0",300:"−1/√3",315:"−1",330:"−√3"}
+};
+ 
+const EXACT_INVERSE = {
+    asin:   {"0":"0°","0.5":"30°","1":"90°","-0.5":"−30°","-1":"−90°","0.7071067811865476":"45°","-0.7071067811865476":"−45°","0.8660254037844387":"60°","-0.8660254037844387":"−60°"},
+    acos:   {"1":"0°","0.5":"60°","0":"90°","-0.5":"120°","-1":"180°","0.7071067811865476":"45°","-0.7071067811865476":"135°","0.8660254037844387":"30°","-0.8660254037844387":"150°"},
+    atan:   {"0":"0°","0.5773502691896258":"30°","1":"45°","1.7320508075688772":"60°","-0.5773502691896258":"−30°","-1":"−45°","-1.7320508075688772":"−60°"},
+    acot:   {"0":"90°","0.5773502691896258":"60°","1":"45°","1.7320508075688772":"30°","-0.5773502691896258":"120°","-1":"135°","-1.7320508075688772":"150°"},
+    asec:   {"1":"0°","2":"60°","-1":"180°","-2":"120°","1.4142135623730951":"45°","-1.4142135623730951":"135°"},
+    acosec: {"1":"90°","2":"30°","-1":"−90°","-2":"−30°","1.4142135623730951":"45°","-1.4142135623730951":"−45°"}
+};
+ 
+function getExactTrig(func, deg) {
+    const t = EXACT_TRIG[func]; if (!t) return null;
+    let key = Math.round(((deg % 360) + 360) % 360);
+    if (key === 360) key = 0;
+    return t.hasOwnProperty(key) ? t[key] : null;
+}
+ 
+function getExactInverse(func, value) {
+    const t = EXACT_INVERSE[func]; if (!t) return null;
+    for (const [k, v] of Object.entries(t))
+        if (Math.abs(parseFloat(k) - parseFloat(value)) < 1e-9) return v;
+    return null;
+}
+ 
+function undefinedReason(func, deg) {
+    const n = ((deg % 360) + 360) % 360;
+    const poles = { tan:[90,270], sec:[90,270], cosec:[0,180,360], cot:[0,180,360] };
+    if (poles[func]?.some(a => Math.abs(n - a) < 1e-9))
+        return `${func}(${deg}°) is <strong>Undefined (UD)</strong> — vertical asymptote at ${n}°.`;
+    return `Result is <strong>Undefined (UD)</strong> — outside the domain of ${func}.`;
+}
+ 
+function inverseUndefinedReason(func, val) {
+    const d = { asin:"−1 ≤ x ≤ 1", acos:"−1 ≤ x ≤ 1", atan:"all reals", acot:"all reals", asec:"|x| ≥ 1", acosec:"|x| ≥ 1" };
+    return `<strong>Undefined (UD)</strong> — requires ${d[func]}, but you entered <em>${val}</em>.`;
+}
+ 
+function calculate() {
+    const ai = document.getElementById('angle').value;
+    if (ai === "") { showToast("Please enter an angle value."); return; }
+    const func = document.getElementById('operation').value;
+    const deg = parseFloat(ai), rad = deg * Math.PI / 180;
+    const map = { sin:Math.sin(rad), cos:Math.cos(rad), tan:Math.tan(rad),
+                  sec:1/Math.cos(rad), cosec:1/Math.sin(rad), cot:1/Math.tan(rad) };
+    let raw = map[func] ?? NaN;
+    if (Math.abs(raw) < 1e-10) raw = 0;
+    if (isUndefined(raw)) {
+        renderResult('result', null, null, true, undefinedReason(func, deg));
+        showToast("Result is Undefined (UD).");
+    } else {
+        renderResult('result', raw.toFixed(6), getExactTrig(func, deg), false);
+        showToast("Calculation successful!", 'success');
+    }
+}
+ 
+function calculateInverse() {
+    const vi = document.getElementById('inverseAngle').value;
+    if (vi === "") { showToast("Please enter a value."); return; }
+    const func = document.getElementById('inverseOperation').value;
+    const v = parseFloat(vi), P = Math.PI;
+    const map = { asin:Math.asin(v)*(180/P), acos:Math.acos(v)*(180/P),
+                  atan:Math.atan(v)*(180/P), acot:(P/2-Math.atan(v))*(180/P),
+                  asec:Math.acos(1/v)*(180/P), acosec:Math.asin(1/v)*(180/P) };
+    let raw = map[func] ?? NaN;
+    if (isUndefined(raw)) {
+        renderResult('inverseResult', null, null, true, inverseUndefinedReason(func, vi));
+        showToast("Result is Undefined (UD).");
+    } else {
+        const ex = getExactInverse(func, v);
+        renderResult('inverseResult', raw.toFixed(6)+"°", ex ? `${ex} (exact)` : null, false);
+        showToast("Calculation successful!", 'success');
+    }
+}
+ 
+// ── Radian Calculator ─────────────────────────────────────────────────────────
+ 
+function r10(v) { return Math.round(v * 1e10) / 1e10; }
+ 
+const EXACT_RAD = (() => {
+    const P = Math.PI;
+    return {
+        [r10(0)]:      {sin:"0",    cos:"1",    tan:"0",     sec:"1",    cosec:"UD",    cot:"UD"   },
+        [r10(P/6)]:    {sin:"1/2",  cos:"√3/2", tan:"1/√3",  sec:"2/√3", cosec:"2",     cot:"√3"   },
+        [r10(P/4)]:    {sin:"√2/2", cos:"√2/2", tan:"1",     sec:"√2",   cosec:"√2",    cot:"1"    },
+        [r10(P/3)]:    {sin:"√3/2", cos:"1/2",  tan:"√3",    sec:"2",    cosec:"2/√3",  cot:"1/√3" },
+        [r10(P/2)]:    {sin:"1",    cos:"0",    tan:"UD",    sec:"UD",   cosec:"1",     cot:"0"    },
+        [r10(2*P/3)]:  {sin:"√3/2", cos:"−1/2", tan:"−√3",   sec:"−2",   cosec:"2/√3",  cot:"−1/√3"},
+        [r10(3*P/4)]:  {sin:"√2/2", cos:"−√2/2",tan:"−1",    sec:"−√2",  cosec:"√2",    cot:"−1"   },
+        [r10(5*P/6)]:  {sin:"1/2",  cos:"−√3/2",tan:"−1/√3", sec:"−2/√3",cosec:"2",     cot:"−√3"  },
+        [r10(P)]:      {sin:"0",    cos:"−1",   tan:"0",     sec:"−1",   cosec:"UD",    cot:"UD"   },
+        [r10(7*P/6)]:  {sin:"−1/2", cos:"−√3/2",tan:"1/√3",  sec:"−2/√3",cosec:"−2",    cot:"√3"   },
+        [r10(5*P/4)]:  {sin:"−√2/2",cos:"−√2/2",tan:"1",     sec:"−√2",  cosec:"−√2",   cot:"1"    },
+        [r10(4*P/3)]:  {sin:"−√3/2",cos:"−1/2", tan:"√3",    sec:"−2",   cosec:"−2/√3", cot:"1/√3" },
+        [r10(3*P/2)]:  {sin:"−1",   cos:"0",    tan:"UD",    sec:"UD",   cosec:"−1",    cot:"0"    },
+        [r10(5*P/3)]:  {sin:"−√3/2",cos:"1/2",  tan:"−√3",   sec:"2",    cosec:"−2/√3", cot:"−1/√3"},
+        [r10(7*P/4)]:  {sin:"−√2/2",cos:"√2/2", tan:"−1",    sec:"√2",   cosec:"−√2",   cot:"−1"   },
+        [r10(11*P/6)]: {sin:"−1/2", cos:"√3/2", tan:"−1/√3", sec:"2/√3", cosec:"−2",    cot:"−√3"  },
+        [r10(2*P)]:    {sin:"0",    cos:"1",    tan:"0",     sec:"1",    cosec:"UD",    cot:"UD"   },
+    };
+})();
+ 
+const RAD_LABELS = (() => {
+    const P = Math.PI;
+    return {
+        [r10(0)]:"0", [r10(P/6)]:"π/6", [r10(P/4)]:"π/4", [r10(P/3)]:"π/3",
+        [r10(P/2)]:"π/2", [r10(2*P/3)]:"2π/3", [r10(3*P/4)]:"3π/4", [r10(5*P/6)]:"5π/6",
+        [r10(P)]:"π", [r10(7*P/6)]:"7π/6", [r10(5*P/4)]:"5π/4", [r10(4*P/3)]:"4π/3",
+        [r10(3*P/2)]:"3π/2", [r10(5*P/3)]:"5π/3", [r10(7*P/4)]:"7π/4",
+        [r10(11*P/6)]:"11π/6", [r10(2*P)]:"2π"
+    };
+})();
+ 
+function getExactRad(rad) {
+    const n = ((rad % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+    return EXACT_RAD[r10(n)] || null;
+}
+function getRadLabel(rad) {
+    const n = ((rad % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+    return RAD_LABELS[r10(n)] || null;
+}
+ 
+let _activePresetBtn = null;
+function clearPresetActive() {
+    if (_activePresetBtn) { _activePresetBtn.classList.remove('active'); _activePresetBtn = null; }
+}
+function setRad(val, btn) {
+    clearPresetActive();
+    btn.classList.add('active');
+    _activePresetBtn = btn;
+    document.getElementById('radAngle').value = parseFloat(val.toFixed(10));
+    calculateRad();
+}
+ 
+function calculateRad() {
+    const input = document.getElementById('radAngle').value;
+    if (input === "") { showToast("Please enter a radian value."); return; }
+    const rad = parseFloat(input);
+    if (isNaN(rad)) { showToast("Please enter a valid number."); return; }
+ 
+    // Info bar
+    const label  = getRadLabel(rad) || rad.toFixed(6) + " rad";
+    const degEq  = (rad * 180 / Math.PI).toFixed(4);
+    const infoBar = document.getElementById('radInfoBar');
+    infoBar.innerHTML = `Angle: <strong>${label}</strong> &nbsp;=&nbsp; ${rad.toFixed(6)} rad &nbsp;=&nbsp; <strong>${degEq}°</strong>`;
+    infoBar.classList.add('show');
+ 
+    const exactRow = getExactRad(rad);
+    const funcs = ['sin','cos','tan','sec','cosec','cot'];
+ 
+    function compute(f) {
+        switch(f) {
+            case 'sin':   return Math.sin(rad);
+            case 'cos':   return Math.cos(rad);
+            case 'tan':   return Math.tan(rad);
+            case 'sec':   return 1 / Math.cos(rad);
+            case 'cosec': return 1 / Math.sin(rad);
+            case 'cot':   return 1 / Math.tan(rad);
+        }
+    }
+ 
+    const cards = funcs.map(f => {
+        let raw = compute(f);
+        if (Math.abs(raw) < 1e-10) raw = 0;
+        const exact = exactRow ? exactRow[f] : null;
+        const ud = isUndefined(raw) || exact === "UD";
+ 
+        if (ud) {
+            return `<div class="rad-card is-ud">
+                <div class="rad-card-label">${f}</div>
+                <div class="rad-card-value">Undefined</div>
+                <div class="rad-ud-note">No value at this angle</div>
+            </div>`;
+        }
+        return `<div class="rad-card">
+            <div class="rad-card-label">${f}</div>
+            <div class="rad-card-value">${raw.toFixed(6)}</div>
+            ${exact ? `<div class="rad-card-exact"><span class="ex-label">Exact:</span><span>${exact}</span></div>` : ''}
+        </div>`;
+    }).join('');
+ 
+    document.getElementById('radCards').innerHTML = cards;
+    showToast("Calculation successful!", 'success');
+}
+</script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ 
+<footer>
+    <p>&copy; 2026 Trigonometry Calculator | Made By Ashley :0</p>
+</footer>
 </body>
 </html>
