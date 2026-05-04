@@ -1,31 +1,40 @@
 # trigonometry-calculator
-A modern, responsive web-based trigonometry calculator built with Bootstrap, designed to compute both standard and inverse trigonometric functions with a clean UI and real-time feedback. The application focuses on simplicity, usability and immediate results for quick mathematical calculations.
+A comprehensive and interactive web-based trigonometry calculator that supports degree-based calculations, inverse functions and radian analysis in a single unified interface. Built with a modern Bootstrap design, the application delivers both decimal approximations and exact values for improved mathematical clarity.
 
 ✨ Features
 
-* 📊 Trigonometric Functions
-    Supports core functions including sine, cosine, tangent, secant, cosecant and cotangent.
+* 📊 Standard Trigonometric Functions
+    Evaluate sine, cosine, tangent, secant, cosecant, and cotangent using degree input.
 * 🔁 Inverse Trigonometry
-    Compute inverse functions such as arcsin, arccos, arctan and their reciprocal counterparts.
-* 📐 Degree-Based Results
-    Inverse outputs are automatically converted into degrees for easier interpretation.
-* ⚡ Instant Feedback
-    Results are displayed immediately after calculation, ensuring a smooth user experience.
-* 🚨 Smart Notifications
-    Provides user-friendly alerts for invalid or missing inputs, along with confirmation messages for successful calculations.
-* 📱 Responsive Design
-    Optimized for both desktop and mobile devices using a clean and accessible layout.
+    Compute inverse functions with automatic conversion to degrees and support for exact angle recognition.
+* 🧮 Exact Value Recognition
+    Displays well-known exact values (e.g. √2/2, √3/2) alongside decimal results for common angles.
+* 📐 Radian Calculator
+    * Input any radian value or select from common angles
+    * Instantly computes all six trigonometric functions simultaneously
+    * Shows both exact and decimal outputs
+    * Includes angle equivalence in degrees
+* ⚠️ Undefined Case Handling
+    Clearly identifies undefined values (e.g. tan 90°) with explanations for better understanding.
+* ⚡ Real-Time Feedback
+    Immediate results with clean UI updates and responsive interactions.
+* 🚨 User-Friendly Notifications
+    Toast alerts guide users through input validation, errors, and successful calculations.
+* 📱 Responsive & Polished UI
+    Built with Bootstrap for a clean, mobile-friendly layout with structured sections and visual clarity.
 
 ⸻
 
 🧠 How It Works
 
-User selects a trigonometric or inverse function
-→ Inputs an angle or value
-→ System validates the input
-→ Applies the corresponding mathematical function
-→ Converts results when necessary (e.g. radians to degrees)
-→ Displays the final output instantly
+User selects calculation type (standard, inverse, or radian)
+→ Inputs angle or value
+→ System validates input and determines domain constraints
+→ Converts between degrees and radians when necessary
+→ Applies corresponding trigonometric formulas
+→ Checks for known exact values and undefined cases
+→ Outputs both decimal and exact results (when applicable)
+→ Displays feedback and updates UI dynamically
 
 ⸻
 
@@ -34,28 +43,28 @@ User selects a trigonometric or inverse function
 * Frontend: HTML, CSS, JavaScript
 * Framework: Bootstrap 5
 * Logic: JavaScript Math API
-* UI Enhancements: Toast notifications for feedback
+* UX Enhancements: Toast notifications, dynamic UI rendering
 
 ⸻
 
 🎯 Use Cases
 
-* Quick trigonometry calculations
-* Learning and practicing inverse functions
-* Supporting math coursework and revision
-* Lightweight utility for everyday calculations
+* Learning and visualizing trigonometric concepts
+* Checking exact values for common angles
+* Solving trig problems quickly and accurately
+* Supporting math education and revision
 
 ⸻
 
 🚀 Future Improvements
 
-* Degree/radian toggle for all calculations
-* Graph visualization of trigonometric functions
-* Calculation history tracking
-* Enhanced validation for undefined values
+* Interactive unit circle visualization
+* Graph plotting for trigonometric functions
+* Step-by-step solution breakdowns
+* Custom expression input (e.g. sin(2π/3))
 
 ⸻
 
 🎯 One-Line Summary
 
-A clean and responsive trigonometry calculator for fast, accurate evaluation of both standard and inverse functions with real-time user feedback.
+A full-featured trigonometry calculator combining degrees, radians, inverse functions, and exact values into a clean and intuitive web interface.
