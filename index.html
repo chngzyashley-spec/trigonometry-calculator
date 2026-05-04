@@ -71,6 +71,37 @@
             display: block;
             margin-bottom: 2px;
         }
+        .rad-input-wrap {
+            position: relative;
+            flex: 1;
+            margin-right: 0.5rem;
+        }
+        .rad-input-wrap input {
+            padding-right: 40px;
+        }
+        .rad-pi-btn {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 13px;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        .rad-pi-btn:hover { background: #495057; }
+        .rad-table { width: 100%; font-size: 15px; margin-top: 12px; }
+        .rad-table th { background: #f0f4ff; font-weight: 600; }
+        .rad-table td, .rad-table th { padding: 5px 8px; border: 1px solid #dee2e6; text-align: center; }
+        .rad-ud { color: #dc3545; font-weight: bold; }
+        .rad-exact { color: #198754; font-size: 13px; display: block; }
+        .rad-decimal { color: #0d6efd; }
+        .pi-presets { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; justify-content: center; }
+        .pi-presets button { font-size: 12px; padding: 2px 8px; }
     </style>
 </head>
 <body>
@@ -338,6 +369,33 @@
             }
         }
     </script>
+ 
+    <!-- Radian Calculator Section -->
+    <div class="container">
+        <h2 class="mb-1">Radian Calculator</h2>
+        <p class="text-muted mb-3" style="font-size:13px;">Enter an angle in radians. Common values: π/6 ≈ 0.5236, π/4 ≈ 0.7854, π/3 ≈ 1.0472, π/2 ≈ 1.5708.</p>
+ 
+        <div class="pi-presets">
+            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(0)">0</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI/6)">π/6</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI/4)">π/4</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI/3)">π/3</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI/2)">π/2</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(Math.PI)">π</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(3*Math.PI/2)">3π/2</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setRad(2*Math.PI)">2π</button>
+        </div>
+ 
+        <div class="mb-3 d-flex align-items-center">
+            <div class="rad-input-wrap">
+                <input type="number" id="radAngle" class="form-control" placeholder="e.g. 1.5708" step="any">
+                <button class="rad-pi-btn" onclick="insertPi()" title="Insert π">π</button>
+            </div>
+            <button class="btn btn-primary" onclick="calculateRad()">Calculate All</button>
+        </div>
+ 
+        <div id="radResult"></div>
+    </div>
  
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
  
